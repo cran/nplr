@@ -30,7 +30,7 @@ plot(np1, cex.main = 1.2,
 ## ----custom, include=FALSE-----------------------------------------------
 op <- par(no.readonly=TRUE)
 par(mfrow=c(1,2))
-plot(np1, pcol="grey40", lcol="skyblue1", showTarget=.5, showInfl=TRUE,
+plot(np1, pcol="grey40", lcol="skyblue1", showEstim=.5, showInfl=TRUE,
      main="Using plot()", cex.main=1.5)
 x1 <- getX(np1); y1 <- getY(np1)
 x2 <- getXcurve(np1); y2 <- getYcurve(np1)
@@ -91,10 +91,10 @@ gw <-  nplr(x, y, method="sdw", LPweight=1.5, silent=TRUE)
 
 ## ----plotWeights, fig.width=12, fig.height=10, echo=2:5------------------
 par(mfrow=c(2,2))
-plot(np2, showTarget=.5, main="residuals weights")
-plot(noweight, showTarget=.5, main="No weight")
-plot(sdw, showTarget=.5, main="Stdev weights")
-plot(noweight, showTarget=.5, main="general weights")
+plot(np2, showEstim=.5, main="residuals weights")
+plot(noweight, showEstim=.5, main="No weight")
+plot(sdw, showEstim=.5, main="Stdev weights")
+plot(noweight, showEstim=.5, main="general weights")
 par(op)
 
 

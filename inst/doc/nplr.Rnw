@@ -1,7 +1,7 @@
 
 % Packages
 \documentclass[a4paper]{article}
-\usepackage{a4wide}
+%\usepackage{a4wide}
 \setlength{\parskip}{0.7ex plus0.1ex minus0.1ex}
 \setlength{\parindent}{0em}
 
@@ -12,6 +12,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{enumitem}
+\usepackage{authblk}
 
 % Page settings
 %\setlength{\textwidth}{15cm} 
@@ -51,11 +52,30 @@
     volume={9},
     pages={7--123}
 }
+@article{Levasseur1998,
+  author = {Levasseur, Laurence M. and Faessel, H\'{e}l\`{e}ne and Slocum, Harry K. and Greco, William R.},
+  journal = {Journal of Pharmacokinetics and Biopharmaceutics},
+  month = dec,
+  number = {6},
+  pages = {717--733},
+  title = {{Implications for Clinical Pharmacodynamic Studies of the Statistical Characterization of an In Vitro Antiproliferation Assay}},
+  volume = {26},
+  year = {1998}
+}
 @misc{NCI,
   url = {https://wiki.nci.nih.gov/display/NCIDTPdata/NCI-60+Growth+Inhibition+Data}
 }
-
 \end{filecontents*}
+
+% Authors
+\author[1,2]{Frederic Commo}
+\author[1]{Briant M. Bot}
+
+\affil[1]{Sage Bionetworks, Fred Hutchinson Cancer Research Center, Seattle, Washington}
+\affil[2]{INSERM U981, Institut Gustave Roussy, 114 rue Edouard Vaillant, 94805 Villejuif, France}
+
+\renewcommand\Authands{ and }
+\renewcommand\Affilfont{\fontsize{9}{10.8}\itshape}
 
 \begin{document}
 
@@ -64,8 +84,8 @@
 
 \title{R package \emph{nplr} \\
   \emph{n-parameter logistic regressions}}
-\author{Frederic Commo \& Briant M. Bot}
-\maketitle\thispagestyle{empty}
+
+\maketitle
 
 % Chunk setup
 <<setup, include=FALSE>>=
@@ -101,10 +121,10 @@ The weights, $wi$, used in the objective function can be computed using 3 possib
   \item{general weights:} $w_{i} = \left (\frac{1}{\hat{y}_i}\right )^p, i=1,...,n\ values$
 \end{itemize}
 
-where $p$ is a tuning parameter. The \texttt{standard weights} and the \texttt{general weights} methods are described in \cite{Motulsky}.
+where $p$ is a tuning parameter. The \texttt{standard weights} and the \texttt{general weights} methods are described in \cite{Motulsky,Levasseur1998}.
 
 \subsection{Functions in \texttt{nplr}}
-The main function is simply \texttt{nplr}, and requires 2 main arguments: a vector of \texttt{x} and a vector of \texttt{y}.
+The main function is simply \texttt{nplr()}. It requires 2 main arguments: a vector of \texttt{x} and a vector of \texttt{y}. Several other arguments have default values.
 \par
 The $npars$ argument allows a user to run specific n-parameter models, n from 2 to 5, while the default value, \texttt{npars="all"}, asks the function to test which model fits the best the data, according to a weighted Goodness-of-Fit estimator.\\
 In some situations, the x values may need to be log-transformed, e.g. x is provided as original drug concentrations. In such case, setting \texttt{useLog=TRUE} in \texttt{nplr()} will apply a $Log_{10}$ transformation on the x values.
@@ -157,7 +177,7 @@ However, a convenient way to draw simplest or customized plots is shown in the e
 <<custom, include=FALSE>>=
 op <- par(no.readonly=TRUE)
 par(mfrow=c(1,2))
-plot(np1, pcol="grey40", lcol="skyblue1", showTarget=.5, showInfl=TRUE,
+plot(np1, pcol="grey40", lcol="skyblue1", showEstim=.5, showInfl=TRUE,
      main="Using plot()", cex.main=1.5)
 x1 <- getX(np1); y1 <- getY(np1)
 x2 <- getXcurve(np1); y2 <- getYcurve(np1)
@@ -230,10 +250,10 @@ gw <-  nplr(x, y, method="sdw", LPweight=1.5, silent=TRUE)
 
 <<plotWeights, fig.width=12, fig.height=10, echo=2:5>>=
 par(mfrow=c(2,2))
-plot(np2, showTarget=.5, main="residuals weights")
-plot(noweight, showTarget=.5, main="No weight")
-plot(sdw, showTarget=.5, main="Stdev weights")
-plot(noweight, showTarget=.5, main="general weights")
+plot(np2, showEstim=.5, main="residuals weights")
+plot(noweight, showEstim=.5, main="No weight")
+plot(sdw, showEstim=.5, main="Stdev weights")
+plot(noweight, showEstim=.5, main="general weights")
 par(op)
 @
 
