@@ -58,9 +58,19 @@
   month = dec,
   number = {6},
   pages = {717--733},
-  title = {{Implications for Clinical Pharmacodynamic Studies of the Statistical Characterization of an In Vitro Antiproliferation Assay}},
+  title = {Implications for Clinical Pharmacodynamic Studies of the Statistical Characterization of an In Vitro Antiproliferation Assay},
   volume = {26},
   year = {1998}
+}
+@article{Willet1988,
+  author = {Willett, John B and Singer, Judith D},
+  journal = {The American Statistician},
+  month = dec,
+  number = {3},
+  pages = {236-238},
+  title = {Another Cautionary Note about R2: Its Use in Weighted Least-Squares Regression Analysis},
+  volume = {42},
+  year = {1988}
 }
 @misc{NCI,
   url = {https://wiki.nci.nih.gov/display/NCIDTPdata/NCI-60+Growth+Inhibition+Data}
@@ -106,9 +116,7 @@ where $B$ and $T$ are the bottom and top asymptotes,  and $b$, $x_{mid}$ and $s$
 \par
 \vspace{\baselineskip}
 
-The \texttt{nplr} package we have developed is based on the full 5-parameter model, and provides several options in order to compute flexible weighted n-parameter logistic regression: n can be explicitly specified, from 2 to 5, or \texttt{nplr} can compare all of these models, and return the optimal one (by default, \texttt{npars="all"}), with respect to a weighted Goodness-of-Fit estimator. See the \texttt{nplr} documentation for more details.
-\par
-During the fitting step, all of the parameters are optimized, simultaneously, using a Newton method (\texttt{nlm}, R package \texttt{stats}). The objective function to minimize is a weighted sum of squared errors:
+The \texttt{nplr} package is based on the full 5-parameter model, where all of the parameters are optimized, simultaneously, using a Newton-Raphson method (\texttt{nlm}, R package \texttt{stats}). The objective function to minimize is a weighted sum of squared errors:
 
 $$ sse(Y) = \Sigma_i{w_i.(\hat{y}_i - y_i)^2}, i=1,...,n $$
 \\
@@ -122,6 +130,18 @@ The weights, $wi$, used in the objective function can be computed using 3 possib
 \end{itemize}
 
 where $p$ is a tuning parameter. The \texttt{standard weights} and the \texttt{general weights} methods are described in \cite{Motulsky,Levasseur1998}.
+
+\texttt{nplr} provides several options in order to compute flexible weighted n-parameter logistic regression: \texttt{npars="all"} can be explicitly specified, from 2 to 5, or set to \texttt{all}. In that case, all the possible models are evaluated, and the optimal one is retunred, with respect to the minimal error returned by \texttt{nlm}.
+\par
+
+The final model performance is estimated by a weighted standard error, and a weighted goodness-of-fit \cite{Willet1988}:
+
+\begin{itemize}
+  \renewcommand\labelitemi{--}
+  \item{weighted standard error:} $ StdErr = \frac{n}{(n-1).\Sigma_i{w_i}}.\Sigma_i{w_i.(\hat{y}_i - y_i)^2}, i=1,...,n $
+  \item{weighted goodness-of-fit:} $ GOF = 1 - \frac{\Sigma_i{w_i}}{(n - 1).S_y^2}, i=1,...,n $ 
+\end{itemize}
+
 
 \subsection{Functions in \texttt{nplr}}
 The main function is simply \texttt{nplr()}. It requires 2 main arguments: a vector of \texttt{x} and a vector of \texttt{y}. Several other arguments have default values.
