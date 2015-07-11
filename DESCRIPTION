@@ -1,8 +1,8 @@
 Package: nplr
 Type: Package
 Title: N-Parameter Logistic Regression
-Version: 0.1-2
-Date: 2015-7-7
+Version: 0.1-3
+Date: 2015-7-11
 Authors@R: c(person(given="Frederic", family="Commo", role=c("aut", "cre"), email="fredcommo@gmail.com"),
 	      person(given="Brian M.", family="Bot", role="aut"))
 Maintainer: Frederic Commo <fredcommo@gmail.com>
@@ -14,8 +14,8 @@ Description: Performing drug response analyses and IC50 estimations using n-Para
 License: GPL
 URL: https://github.com/fredcommo/nplr
 NeedsCompilation: no
-Packaged: 2015-07-08 10:39:51 UTC; fredcommo
+Packaged: 2015-07-11 09:31:54 UTC; fredcommo
 Author: Frederic Commo [aut, cre],
   Brian M. Bot [aut]
 Repository: CRAN
-Date/Publication: 2015-07-08 14:46:27
+Date/Publication: 2015-07-11 18:32:05

@@ -26,11 +26,11 @@ plot(np1, cex.main = 1.2,
 op <- par(no.readonly=TRUE)
 par(mfrow=c(1,2))
 plot(np1, pcol="grey40", lcol="skyblue1", showEstim=.5, showInfl=TRUE,
-     main="Using plot()", cex.main=1.5)
+     main="Default 'nplr' plot", cex.main=1.5)
 x1 <- getX(np1); y1 <- getY(np1)
 x2 <- getXcurve(np1); y2 <- getYcurve(np1)
 plot(x1, y1, pch=15, cex=2, col="tan1", xlab=expression(Log[10](conc)),
-     ylab="Prop", main="My plot", cex.main=1.5)
+     ylab="Prop", main="Custom plot", cex.main=1.5)
 lines(x2, y2, lwd=5, col="seagreen4")
 par(op)
 
@@ -38,11 +38,11 @@ par(op)
 op <- par(no.readonly=TRUE)
 par(mfrow=c(1,2))
 plot(np1, pcol="grey40", lcol="skyblue1", showEstim=.5, showInfl=TRUE,
-     main="Using plot()", cex.main=1.5)
+     main="Default 'nplr' plot", cex.main=1.5)
 x1 <- getX(np1); y1 <- getY(np1)
 x2 <- getXcurve(np1); y2 <- getYcurve(np1)
 plot(x1, y1, pch=15, cex=2, col="tan1", xlab=expression(Log[10](conc)),
-     ylab="Prop", main="My plot", cex.main=1.5)
+     ylab="Prop", main="Custom plot", cex.main=1.5)
 lines(x2, y2, lwd=5, col="seagreen4")
 par(op)
 
@@ -118,4 +118,25 @@ for(i in 2:5){
   le <- c(le, sprintf("%s-P: GOF=%s", i, round(gof, 4)))
 }
 legend("bottomright", legend=le, lwd=2, pch=19, col=2:5, bty="n")
+
+## ----overlay-------------------------------------------------------------
+# Simulating responses
+set.seed(123)
+drug <- rep(seq(-8, -1), 3)
+Resp <- lapply(c(-6, -4, -2), function(xmid){
+    scal <- rnorm(1, -1, .1)
+    s <- rnorm(1, 1, .1)
+    err <- rnorm(length(drug), 0, .15)
+    nplr:::.nPL5(0, 1, xmid, scal, s, drug) + err
+    }
+)
+
+# Computing models (to store in a list)
+Models <- lapply(Resp, function(resp){
+  nplr(10^drug, resp, silent = TRUE)
+  })
+
+# Visualizing
+overlay(Models, xlab = "Conc.", ylab = "Resp.",
+  main="Superimposing multiple curves", cex.main=1.5)
 

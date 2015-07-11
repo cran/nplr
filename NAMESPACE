@@ -6,6 +6,7 @@ import(graphics)
 ## IMPORTS FROM OTHER PACKAGES
 #importFrom(graphics, plot)
 importFrom(grDevices, rgb)
+importFrom(grDevices, grey)
 importFrom(utils, packageVersion)
 
 ## EXPORT S3 methods
@@ -15,7 +16,8 @@ S3method(plot, nplr)
 export(
   nplr,
   convertToProp,
-  plot.nplr
+  plot.nplr,
+  overlay
 )
 
 ## EXPORT METHODS
