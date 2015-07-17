@@ -1,6 +1,7 @@
 ## ----setup, include=FALSE------------------------------------------------
+# fig.width=5.5, 
 require(knitr)
-opts_chunk$set(fig.align='center', fig.width=5.5, fig.height=4.5,
+opts_chunk$set(fig.align='center', fig.height=5, warning=FALSE,
                dev='pdf', prompt=TRUE, comment=NA, highlight=FALSE, tidy=FALSE)
 
 ## ----nplr, message=FALSE, warning=FALSE----------------------------------
@@ -73,7 +74,8 @@ mcf7 <- read.delim(path)
 np2 <- nplr(x=mcf7$CONC, y=mcf7$GIPROP)
 
 ## ----plot2---------------------------------------------------------------
-plot(np2 , cex.main=1.25, main="Cell line MCF-7. Response to Irinotecan")
+plot(np2, showSDerr = TRUE, lwd = 4 , cex.main=1.25,
+     main="Cell line MCF-7. Response to Irinotecan")
 
 ## ----testWeights, message=FALSE, warning=FALSE---------------------------
 x <- mcf7$CONC
@@ -120,23 +122,16 @@ for(i in 2:5){
 legend("bottomright", legend=le, lwd=2, pch=19, col=2:5, bty="n")
 
 ## ----overlay-------------------------------------------------------------
-# Simulating responses
-set.seed(123)
-drug <- rep(seq(-8, -1), 3)
-Resp <- lapply(c(-6, -4, -2), function(xmid){
-    scal <- rnorm(1, -1, .1)
-    s <- rnorm(1, 1, .1)
-    err <- rnorm(length(drug), 0, .15)
-    nplr:::.nPL5(0, 1, xmid, scal, s, drug) + err
-    }
-)
+path <- system.file("extdata", "multicell.tsv", package="nplr")
+multicell <- read.delim(path)
 
 # Computing models (to store in a list)
-Models <- lapply(Resp, function(resp){
-  nplr(10^drug, resp, silent = TRUE)
+cellsList <- split(multicell, multicell$cell)
+Models <- lapply(cellsList, function(tmp){
+  nplr(tmp$conc, tmp$resp, silent = TRUE)
   })
 
 # Visualizing
-overlay(Models, xlab = "Conc.", ylab = "Resp.",
-  main="Superimposing multiple curves", cex.main=1.5)
+overlay(Models, xlab = expression(Log[10](Conc.)), ylab = "Resp.",
+  main="Superimposing multiple curves", cex.main=1.5, lwd = 3)
 
