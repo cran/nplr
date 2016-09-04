@@ -96,8 +96,8 @@
 }
 .initPars <- function(x, y, npars){
     if(npars<5) s <- 1 else s <- 1
-    if(npars<4) bottom <- 0 else bottom <- quantile(y, .05,na.rm=TRUE)
-    if(npars<3) top <-1 else top <- quantile(y, .95,na.rm=TRUE)
+    if(npars<4) bottom <- 0 else bottom <- quantile(y, .05, na.rm=TRUE)
+    if(npars<3) top <-1 else top <- quantile(y, .95, na.rm=TRUE)
     xmid <- (max(x)+min(x))/2 #.estimMid(x, y) #(max(x)+min(x))/2
     scal <- .estimScal(x, y)
     c(bottom, top, xmid, scal, s)
@@ -151,21 +151,42 @@
 }
 .gof <- function(y, yfit, w){
     n <- length(y)
-    S2y <- var(y)
-    Rw <- 1 - sum(w^2)/((n-1)*S2y)
-    return(Rw)
+    S2y <- var(y, na.rm = TRUE)
+    gof <- 1 - sum(w^2)/((n-1)*S2y)
+    return(gof)
 }
-.getPerf <- function(y, yfit){
-    w <- (y - yfit)^2
-    lmtest <- summary(lm(y ~ yfit, weights=w))
-    fstat <- lmtest$fstatistic
+.getPerf <- function(x, y, w){
+
+    w <- w/sum(w)
+    lmSummary <- summary(lm(y ~ x, weights=w))
+    fstat <- lmSummary$fstatistic
     p <- pf(fstat[1], fstat[2], fstat[3], lower.tail=FALSE)
-    goodness <- .gof(y, yfit, w)
-    n <- sum(w!=0)
-    W <- n/((n-1)*sum(w))
-    stdErr <- sqrt(W*sum(w*(yfit-y)^2))
-    return(cbind.data.frame(goodness=goodness, stdErr=stdErr, p=p))
+    goodness <- .gof(x, y, w)
+    stdErr <- sum((y - x)^2)
+    wStdErr <- sum(w*(y - x)^2)
+
+    return(cbind.data.frame(goodness=goodness, stdErr=stdErr, wStdErr=wStdErr, p=p))
+
 }
+
+# .getPerf <- function(y, yfit, w){
+#     n <- length(y)
+#     w <- (y - yfit)^2
+#     lmSummary <- summary(lm(y ~ yfit, weights=w))
+#     fstat <- lmSummary$fstatistic
+#     p <- pf(fstat[1], fstat[2], fstat[3], lower.tail=FALSE)
+
+#     goodness <- .gof(y, yfit, w)
+#     n <- sum(w!=0)
+#     W <- n/(n-1)*sum(w)
+#     wStdErr <- W*sum(w*(yfit-y)^2)
+
+#     return(cbind.data.frame(goodness=goodness, wStdErr=wStdErr, p=p))
+
+#     # goodness <- lmSummary$adj.r.squared
+#     # res <- lmSummary$residuals
+#     # stdErr <- sqrt(1/(n - 2)*sum(res^2))
+# }
 
 ##################
 # AREAS
@@ -264,11 +285,13 @@
     
 }
 .addGOF <- function(object){
-    gof <- format(getGoodness(object), digits=3, scientific = TRUE)
+    gof <- format(getGoodness(object), digits = 4, scientific = TRUE)
     newx <- getXcurve(object)
     newy <- getYcurve(object)
-    legend(ifelse(newy[length(newy)]<newy[1], 'topright', 'bottomright'),
-           legend = paste('Goodness of fit:', gof), bty = 'n', cex = 1.5)
+    xpos <- max(newx, na.rm = TRUE)
+    xpos <- ifelse(xpos < 0, xpos*1.1, xpos*.9)
+    ypos <- ifelse(newy[length(newy)] < newy[1], max(newy, na.rm = TRUE), min(newy, na.rm = TRUE))
+    legend(xpos, ypos, legend = paste('Goodness of fit:', gof), bty = 'n', cex = 1.25, xjust = 1, yjust = .5)
 }
 .addPoints <- function(object, pcol, ...){
     x <- getX(object)

@@ -37,7 +37,8 @@ None
 }
 \note{
 The data used in the examples are samples from the NCI-60 Growth Inhibition Data:\cr
-\url{https://wiki.nci.nih.gov/display/NCIDTPdata/NCI-60+Growth+Inhibition+Data}
+\url{https://wiki.nci.nih.gov/display/NCIDTPdata/NCI-60+Growth+Inhibition+Data},
+except for multicell.tsv which are simulated data.
 }
 \examples{
 # Using the PC-3 data
