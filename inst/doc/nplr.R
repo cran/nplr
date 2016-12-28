@@ -109,23 +109,23 @@ plot(np3, showInfl=TRUE, xlab="Time (hrs)", cex.main=1.5, cex.lab=1.2,
      ylab="Prop. of control", main="Progression")
 
 ## ----npar----------------------------------------------------------------
-plot(x, yp , cex.main=1.5, cex.lab=1.2,
+plot(x, yp, pch=19, col="grey" , cex.main=1.5, cex.lab=1.2,
      main="The n-parameter effect", xlab="Time", ylab="Progression")
 le <- c()
 for(i in 2:5){
-  test <- nplr(x, yp, npars=i, useLog=FALSE)
-  lines(getXcurve(test), getYcurve(test), lwd=2, col=i)
-  points(getInflexion(test), pch=19, cex=1.25, col=i)
-  gof <- getGoodness(test)
+  test <- nplr(x, yp, npars = i, useLog = FALSE)
+  lines(getXcurve(test), getYcurve(test), lwd = 2, col = i)
+  goodness <- getGoodness(test)
+  gof <- goodness$gof
   le <- c(le, sprintf("%s-P: GOF=%s", i, round(gof, 4)))
 }
-legend("bottomright", legend=le, lwd=2, pch=19, col=2:5, bty="n")
+legend("bottomright", legend=le, lwd=2, col=2:5, bty="n")
 
 ## ----overlay-------------------------------------------------------------
 path <- system.file("extdata", "multicell.tsv", package="nplr")
 multicell <- read.delim(path)
 
-# Computing models (to store in a list)
+# Computing models (to be stored in a list)
 cellsList <- split(multicell, multicell$cell)
 Models <- lapply(cellsList, function(tmp){
   nplr(tmp$conc, tmp$resp, silent = TRUE)
