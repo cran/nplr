@@ -142,10 +142,11 @@
         test4 <- try(nlm(f=.sce, p=.initPars(x, y, 4), x=x, yobs=y, .weight, LPweight, .nPL4), silent=TRUE)
         test5 <- try(nlm(f=.sce, p=.initPars(x, y, 5), x=x, yobs=y, .weight, LPweight, .nPL5), silent=TRUE)
         scores <- sapply(list(test2, test3, test4, test5), function(t){
-        if(class(t)!="try-error")
+        if (inherits(t, "try-error")) {
+            return(Inf)
+        } else {
             return(t$minimum)
-        else
-            return(Inf) 
+        }
         })
         return(scores)
     })
@@ -155,7 +156,7 @@
     n <- length(y)
     S2y <- var(y, na.rm = TRUE)
     SSres <- sum((yfit - y)^2, na.rm = TRUE)
-    wSSres <- sum(w*(yfit - y)^2, na.rm = TRUE) 
+    wSSres <- sum(w*(yfit - y)^2, na.rm = TRUE)
     SStot <- sum((y - mean(y, na.rm = TRUE))^2, na.rm = TRUE)
 
     return(list(gof = 1 - SSres/SStot, wgof = 1 - wSSres/SStot))
